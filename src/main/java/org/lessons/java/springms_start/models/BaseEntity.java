@@ -21,7 +21,7 @@ public class BaseEntity {
     private String createdBy;
 
 
-    @Column(insertable = false)  //this field cannot be in query INSERT 
+    @Column(insertable = true)  //this field cannot be in query INSERT 
     private LocalDateTime updatedAt;
 
     @Column(insertable = false)  //this field cannot be in query INSERT 
@@ -32,7 +32,7 @@ public class BaseEntity {
     public void prePersist(){
         LocalDateTime now = LocalDateTime.now();
         this.createdAt = now;
-        this.updatedAt = now;
+        this.updatedAt = now; 
     }
     @PreUpdate  //called before save the updates on db
     public void preUpdate(){

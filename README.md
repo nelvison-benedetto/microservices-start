@@ -1,6 +1,4 @@
 ## Microservices Spring Start
-output:
-
-Developed ...
+Project developed as a Spring Boot microservice designed to manage customer account creation with H2 in-memory database integration. The application exposes a REST API endpoint at /api/v1/accounts which accepts a CustomerDTO payload to register new users. It performs validation by checking for existing customers via phone number using the CustomerRepo, and throws a custom CustomerAlreadyExistsException if duplicates are found. On successful creation, it maps the DTO to an entity using a custom mapper, persists the customer, and automatically generates an associated bank account with default parameters. The system uses a layered architecture with service interfaces, mappers, and centralized exception handling via @ControllerAdvice. Data persistence is managed through Spring Data JPA and all operations are logged with SQL output enabled for debugging.
 
 <!-- ![Reference1](./readmefiles/index.png) -->

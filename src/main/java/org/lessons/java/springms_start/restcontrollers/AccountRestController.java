@@ -15,7 +15,7 @@ import io.micrometer.core.ipc.http.HttpSender.Response;
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping(path ="/api/v1/accounts", produces = {MediaType.APPLICATION_JSON_VALUE}) //mediatype choose 'org-springframework.http'!!
+@RequestMapping(path ="/api/v1/accounts", produces = {MediaType.APPLICATION_JSON_VALUE}) //mediatype choose 'org-springframework.http', the controller ALWAYS returns json
 //@AllArgsConstructor
 public class AccountRestController {
     
@@ -26,7 +26,7 @@ public class AccountRestController {
 
     @PostMapping
     public ResponseEntity<ResponseDTO> createAccount(@RequestBody CustomerDTO customerDTO){
-        iAccountService.createAccount(customerDTO);
+        iAccountService.createAccount(customerDTO);  //use the interface, so in future u can change the implementation without edit anything here
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(new ResponseDTO(AccountCostants.STATUS_201, AccountCostants.MESSAGE_201));

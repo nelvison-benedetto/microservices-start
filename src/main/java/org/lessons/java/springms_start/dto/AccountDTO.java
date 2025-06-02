@@ -12,8 +12,11 @@ import lombok.Setter;
 @Data //fa @getter@setter@ToString@EqualsAndHashCode@RequiredArgsConstructor ma in entita danno problemi equals() e hashcode() x le relzioni bidirezionali!!
 public class AccountDTO {
     
-    private List<Account> accounts;
+    private Integer accountId; 
+
     private String accountType;
     private String branchAddress;
+
+    //private CustomerDTO customer;
 
 }

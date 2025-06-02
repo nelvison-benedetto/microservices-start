@@ -7,7 +7,6 @@ import lombok.Data;
 public class ResponseDTO {
     
     private String statusCode;
-
     private String statusMex;
 
     

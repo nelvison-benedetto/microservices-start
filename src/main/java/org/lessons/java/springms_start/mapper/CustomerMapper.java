@@ -5,7 +5,7 @@ import org.lessons.java.springms_start.models.Customer;
 
 public class CustomerMapper {
     
-    public static CustomerDTO mapToCustomerDTO(Customer customer, CustomerDTO customerDTO) {
+    public static CustomerDTO mapToCustomerDTO(Customer customer, CustomerDTO customerDTO) {  //static! not necessary create instances
         customerDTO.setFirstName(customer.getFirstName());
         customerDTO.setLastName(customer.getLastName());
         customerDTO.setEmail(customer.getEmail());
@@ -13,7 +13,7 @@ public class CustomerMapper {
         return customerDTO;
     }
 
-    public static Customer mapToCustomer(CustomerDTO customerDTO, Customer customer) {
+    public static Customer mapToCustomer(CustomerDTO customerDTO, Customer customer) {  //static! not necessary create instances 
         customer.setFirstName(customerDTO.getFirstName());
         customer.setLastName(customerDTO.getLastName());
         customer.setEmail(customerDTO.getEmail());
