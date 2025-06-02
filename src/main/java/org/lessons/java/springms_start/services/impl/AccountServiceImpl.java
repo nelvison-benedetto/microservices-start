@@ -4,8 +4,11 @@ import java.util.Optional;
 import java.util.Random;
 
 import org.lessons.java.springms_start.constants.AccountCostants;
+import org.lessons.java.springms_start.dto.AccountDTO;
 import org.lessons.java.springms_start.dto.CustomerDTO;
 import org.lessons.java.springms_start.exceptions.CustomerAlreadyExistsException;
+import org.lessons.java.springms_start.exceptions.ResourceNotFoundException;
+import org.lessons.java.springms_start.mapper.AccountMapper;
 import org.lessons.java.springms_start.mapper.CustomerMapper;
 import org.lessons.java.springms_start.models.Account;
 import org.lessons.java.springms_start.models.Customer;
@@ -51,5 +54,53 @@ public class AccountServiceImpl implements IAccountService{
         newAccount.setBranchAddress(AccountCostants.ADDRESS);
         return newAccount;
     }
+
+    @Override
+    public CustomerDTO fetchAccount(String phone){
+        Customer customer = customerRepo.findByPhone(phone).orElseThrow(
+            ()-> new ResourceNotFoundException("Customer", "phone", phone)
+        );
+        Account account = accountRepo.findByCustomerId(customer.getCustomerId()).orElseThrow(
+            ()-> new ResourceNotFoundException("Account", "customerId", customer.getCustomerId().toString())
+        );
+        CustomerDTO customerDTO = CustomerMapper.mapToCustomerDTO(customer, new CustomerDTO()); //converts obj Customer->CustomerDTO (with field accountDTO, null)
+        customerDTO.setAccountDTO(AccountMapper.mapToAccountDTO(account, new AccountDTO()));
+
+        return null;
+    }
+
+    @Override
+    public boolean updateAccount(CustomerDTO customerDTO){
+        boolean isUpdated = false;
+        AccountDTO accountDTO = customerDTO.getAccountDTO();
+        if(accountDTO != null){
+            Account account = accountRepo.findById(accountDTO.getAccountId()).orElseThrow(
+                ()-> new ResourceNotFoundException("Account", "accountId", accountDTO.getAccountId().toString())
+            );
+            AccountMapper.mapToAccount(accountDTO, account);
+            account = accountRepo.save(account);
+
+            Integer customerId = account.getCustomer().getCustomerId();
+            
+            Customer customer = customerRepo.findById(customerId).orElseThrow(
+                ()-> new ResourceNotFoundException("Customer", "customerId", customerId.toString())
+            );
+            CustomerMapper.mapToCustomer(customerDTO, customer);
+            customer = customerRepo.save(customer);
+            isUpdated = true;
+        }
+        return isUpdated;
+    }
+
+    @Override
+    public boolean deleteAccount(String phone){
+        Customer customer = customerRepo.findByPhone(phone).orElseThrow(
+            ()-> new ResourceNotFoundException("Customer", "phone", phone)
+        );
+        accountRepo.deleteByCustomerId(customer.getCustomerId());
+        customerRepo.deleteById(customer.getCustomerId());
+        return true;
+    }
+
 
 }
