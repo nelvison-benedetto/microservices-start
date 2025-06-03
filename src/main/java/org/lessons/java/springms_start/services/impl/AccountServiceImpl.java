@@ -110,7 +110,7 @@ public class AccountServiceImpl implements IAccountService{
         Customer customer = customerRepo.findByPhone(phone).orElseThrow(
             ()-> new ResourceNotFoundException("Customer", "phone", phone)
         );
-        accountRepo.deleteByCustomerId(customer.getCustomerId());  //delete all the accounts target
+        accountRepo.deleteByCustomer_CustomerId(customer.getCustomerId());  //delete all the accounts target
         customerRepo.deleteById(customer.getCustomerId());  //delete the owner customer
         return true;
     }
