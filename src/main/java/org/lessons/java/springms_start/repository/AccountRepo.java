@@ -12,7 +12,7 @@ import jakarta.transaction.Transactional;
 @Repository
 public interface AccountRepo extends JpaRepository<Account, Integer> {
     
-    Optional<Account> findByCustomerId(Integer customerId);
+    Optional<Account> findByCustomer_CustomerId(Integer customerId);
     
     @Transactional @Modifying
     void deleteByCustomerId(Integer customerId);

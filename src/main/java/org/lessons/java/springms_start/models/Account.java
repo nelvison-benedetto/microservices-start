@@ -36,6 +36,10 @@ public class Account extends BaseEntity implements Serializable{  //use as base 
     @EqualsAndHashCode.Include
     private Integer accountId;
 
+
+    @Column(name = "account_number")
+    private Integer accountNumber;
+
     @Column(name = "account_type")
     private String accountType;
 
@@ -45,9 +49,9 @@ public class Account extends BaseEntity implements Serializable{  //use as base 
 
     //RELATIONS
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)  //many account possono essere associati ad 1 account. no limits of number of accounts 
     @JoinColumn(name="customer_id")
     @JsonManagedReference
-    private Customer customer;
+    private Customer customer;  //il father a cui appartiene this child Account
 
 }

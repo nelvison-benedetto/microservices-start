@@ -37,7 +37,6 @@ public class AccountRestController {
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(new ResponseDTO(AccountCostants.STATUS_201, AccountCostants.MESSAGE_201));
-    
     }
 
     @GetMapping("/fetch")

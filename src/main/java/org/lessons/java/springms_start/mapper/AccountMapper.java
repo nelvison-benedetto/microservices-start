@@ -7,22 +7,17 @@ public class AccountMapper {
     
     public static AccountDTO mapToAccountDTO(Account account, AccountDTO accountDTO) {  //static! not necessary create instances
 
-        accountDTO.setAccountId(account.getAccountId());
+        accountDTO.setAccountNumber(account.getAccountNumber());
         accountDTO.setAccountType(account.getAccountType());
         accountDTO.setBranchAddress(account.getBranchAddress());
-
-        //accountDTO.setCustomer(account.getCustomer());
         return accountDTO;  //return the obj setted correctly
     }
 
     public static Account mapToAccount(AccountDTO accountDTO, Account account) {  //static! not necessary create instances
 
-        accountDTO.setAccountId(account.getAccountId());
-        account.setAccountId(accountDTO.getAccountId());
+        accountDTO.setAccountNumber(account.getAccountNumber());
         account.setAccountType(accountDTO.getAccountType());
         account.setBranchAddress(accountDTO.getBranchAddress());
-
-        //accountDTO.setCustomer(account.getCustomer());
         return account;   //return the obj setted correctly
     }
 

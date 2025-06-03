@@ -2,7 +2,10 @@ package org.lessons.java.springms_start.dto;
 import java.util.List;
 import org.lessons.java.springms_start.models.Account;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -14,13 +17,14 @@ import lombok.Setter;
 @Data //fa @getter@setter@ToString@EqualsAndHashCode@RequiredArgsConstructor ma in entita danno problemi equals() e hashcode() x le relzioni bidirezionali!!
 public class AccountDTO {
     
-    @NotEmpty(message = "accountId cannot be null.")
-    private Integer accountId;   //!!!maybe should be "accountNumber" and apply a @Pattern(regexp = "(^$|[0-9]{10})", message = "accountNumber must be 10 digits.")
+    @NotBlank(message = "accountNumber cannot be blank.")
+    @Pattern(regexp = "(^$|[0-9]{10})", message = "accountNumber must be 10 digits.")
+    private Integer accountNumber;
 
-    @NotEmpty(message = "accountType cannot be null.")
+    @NotBlank(message = "accountType cannot be blank.")
     private String accountType;
 
-    @NotEmpty(message = "branchAddress cannot be null.")
+    @NotBlank(message = "branchAddress cannot be blank.")
     private String branchAddress;
 
     //private CustomerDTO customer;

@@ -43,6 +43,7 @@ public class Customer extends BaseEntity implements Serializable{   //use as bas
     @EqualsAndHashCode.Include
     private Integer customerId;
 
+
     @Column(name = "first_name")
     private String firstName;
 
@@ -52,7 +53,7 @@ public class Customer extends BaseEntity implements Serializable{   //use as bas
     private String email;
 
     private String phone;
-
+    
 
     //RELATIONS
 

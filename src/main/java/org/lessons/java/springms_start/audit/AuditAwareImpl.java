@@ -12,6 +12,4 @@ public class AuditAwareImpl implements AuditorAware<String>{  //use interface x 
         return Optional.of("MYACCOUNT_MS");  //return the name of the auditor (e.g., user or service) (here is setted MYACCOUNT_MS invented)
           //w spring sec you could use SecurityContextHolder.getContext().getAuthentication().getName();
     }
-
-
 }

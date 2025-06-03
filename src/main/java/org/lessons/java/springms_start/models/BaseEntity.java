@@ -38,7 +38,7 @@ public class BaseEntity {
     @Column(insertable = false)  //this field cannot be in query INSERT 
     private String updatedBy;
 
-    //PREs
+    //PREs  vengono eseguiti prima dell'auditing, quindi nei campi target VENGONO SOVRASCRITTI da auditing results, cmnq its ok x fallback
     @PrePersist  //called before obj Customer/Account saved on db for the first time, then set cols createdAt & updatedAt
     public void prePersist(){
         LocalDateTime now = LocalDateTime.now();

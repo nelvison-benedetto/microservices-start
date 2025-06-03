@@ -55,18 +55,18 @@ public class AccountServiceImpl implements IAccountService{
         return newAccount;
     }
 
+
     @Override
     public CustomerDTO fetchAccount(String phone){
         Customer customer = customerRepo.findByPhone(phone).orElseThrow(
-            ()-> new ResourceNotFoundException("Customer", "phone", phone)
+            ()-> new ResourceNotFoundException("Customer", "phone", phone)  //create new obj
         );
-        Account account = accountRepo.findByCustomerId(customer.getCustomerId()).orElseThrow(
+        Account account = accountRepo.findByCustomer_CustomerId(customer.getCustomerId()).orElseThrow(
             ()-> new ResourceNotFoundException("Account", "customerId", customer.getCustomerId().toString())
         );
         CustomerDTO customerDTO = CustomerMapper.mapToCustomerDTO(customer, new CustomerDTO()); //converts obj Customer->CustomerDTO (with field accountDTO, null)
-        customerDTO.setAccountDTO(AccountMapper.mapToAccountDTO(account, new AccountDTO()));
-
-        return null;
+        AccountDTO accountDTO = AccountMapper.mapToAccountDTO(account, new AccountDTO());
+        return customerDTO;
     }
 
     @Override
@@ -90,7 +90,7 @@ public class AccountServiceImpl implements IAccountService{
             isUpdated = true;
         }
         return isUpdated;
-    }
+    }   //FINDBYID ERROR PK NOT NAMED 'ID'
 
     @Override
     public boolean deleteAccount(String phone){
