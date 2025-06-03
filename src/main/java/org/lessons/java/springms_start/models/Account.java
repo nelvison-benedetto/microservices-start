@@ -38,7 +38,7 @@ public class Account extends BaseEntity implements Serializable{  //use as base 
 
 
     @Column(name = "account_number")
-    private Integer accountNumber;
+    private String accountNumber;
 
     @Column(name = "account_type")
     private String accountType;

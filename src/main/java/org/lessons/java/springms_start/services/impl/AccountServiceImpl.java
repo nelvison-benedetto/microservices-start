@@ -1,5 +1,6 @@
 package org.lessons.java.springms_start.services.impl;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -49,6 +50,11 @@ public class AccountServiceImpl implements IAccountService{
 
     private Account createNewAccount(Customer customer){
         Account newAccount = new Account();
+
+        Random random = new Random();
+        String accountNumber = String.format("%010d", random.nextInt(1_000_000_000));
+
+        newAccount.setAccountNumber(accountNumber);
         newAccount.setCustomer(customer);  //x bidirectional relationship
         newAccount.setAccountType(AccountCostants.SAVINGS);
         newAccount.setBranchAddress(AccountCostants.ADDRESS);
@@ -64,23 +70,28 @@ public class AccountServiceImpl implements IAccountService{
         Account account = accountRepo.findByCustomer_CustomerId(customer.getCustomerId()).orElseThrow(
             ()-> new ResourceNotFoundException("Account", "customerId", customer.getCustomerId().toString())
         );
-        CustomerDTO customerDTO = CustomerMapper.mapToCustomerDTO(customer, new CustomerDTO()); //converts obj Customer->CustomerDTO (with field accountDTO, null)
-        AccountDTO accountDTO = AccountMapper.mapToAccountDTO(account, new AccountDTO());
+        CustomerDTO customerDTO = CustomerMapper.mapToCustomerDTO(customer); //converts obj Customer->CustomerDTO (with field accountDTO, null)
+        AccountDTO accountDTO = AccountMapper.mapToAccountDTO(account);
+        customerDTO.getAccounts().add(accountDTO);
         return customerDTO;
     }
 
     @Override
     public boolean updateAccount(CustomerDTO customerDTO){
         boolean isUpdated = false;
-        AccountDTO accountDTO = customerDTO.getAccountDTO();
-        if(accountDTO != null){
-            Account account = accountRepo.findById(accountDTO.getAccountId()).orElseThrow(
-                ()-> new ResourceNotFoundException("Account", "accountId", accountDTO.getAccountId().toString())
-            );
-            AccountMapper.mapToAccount(accountDTO, account);
-            account = accountRepo.save(account);
+        List<AccountDTO> accountDTOlist = customerDTO.getAccounts();
+        if(! accountDTOlist.isEmpty()){
 
-            Integer customerId = account.getCustomer().getCustomerId();
+            for (AccountDTO accountDTO : accountDTOlist) {
+                Account account = accountRepo.findById(accountDTO.getAccountId()).orElseThrow(
+                    () -> new ResourceNotFoundException("Account", "accountId", accountDTO.getAccountId().toString())
+                );
+                Customer customer = account.getCustomer();
+                AccountMapper.mapToAccount(accountDTO, account, customer);
+                accountRepo.save(account);
+            }
+
+            Integer customerId =customerDTO.getCustomerId();
             
             Customer customer = customerRepo.findById(customerId).orElseThrow(
                 ()-> new ResourceNotFoundException("Customer", "customerId", customerId.toString())
@@ -88,17 +99,19 @@ public class AccountServiceImpl implements IAccountService{
             CustomerMapper.mapToCustomer(customerDTO, customer);
             customer = customerRepo.save(customer);
             isUpdated = true;
+        } else{
+            System.out.println("Update failed, account list of the obj customerDTO is empty.");
         }
         return isUpdated;
-    }   //FINDBYID ERROR PK NOT NAMED 'ID'
+    }
 
     @Override
     public boolean deleteAccount(String phone){
         Customer customer = customerRepo.findByPhone(phone).orElseThrow(
             ()-> new ResourceNotFoundException("Customer", "phone", phone)
         );
-        accountRepo.deleteByCustomerId(customer.getCustomerId());
-        customerRepo.deleteById(customer.getCustomerId());
+        accountRepo.deleteByCustomerId(customer.getCustomerId());  //delete all the accounts target
+        customerRepo.deleteById(customer.getCustomerId());  //delete the owner customer
         return true;
     }
 

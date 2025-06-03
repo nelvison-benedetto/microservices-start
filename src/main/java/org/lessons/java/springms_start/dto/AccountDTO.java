@@ -16,10 +16,12 @@ import lombok.Setter;
 // @AllArgsConstructor
 @Data //fa @getter@setter@ToString@EqualsAndHashCode@RequiredArgsConstructor ma in entita danno problemi equals() e hashcode() x le relzioni bidirezionali!!
 public class AccountDTO {
+
+    private Integer accountId;
     
     @NotBlank(message = "accountNumber cannot be blank.")
-    @Pattern(regexp = "(^$|[0-9]{10})", message = "accountNumber must be 10 digits.")
-    private Integer accountNumber;
+    @Pattern(regexp = "^[0-9]{10}$", message = "accountNumber must be 10 digits.")
+    private String accountNumber;
 
     @NotBlank(message = "accountType cannot be blank.")
     private String accountType;
@@ -27,6 +29,6 @@ public class AccountDTO {
     @NotBlank(message = "branchAddress cannot be blank.")
     private String branchAddress;
 
-    //private CustomerDTO customer;
+    private Integer customerId;  //custom SOLO ID, x evitare loop relazione infiniti fra i 2 dto.
 
 }

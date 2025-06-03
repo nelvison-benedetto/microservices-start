@@ -14,6 +14,8 @@ import lombok.Data;
 @Data //fa @getter@setter@ToString@EqualsAndHashCode@RequiredArgsConstructor ma in entita danno problemi equals() e hashcode() x le relzioni bidirezionali!!
 public class CustomerDTO {
     
+    private Integer customerId;
+
     @NotBlank(message = "firstanme cannot be blank.")
     private String firstName;
     
@@ -24,9 +26,9 @@ public class CustomerDTO {
     @Email(message = "email invalid.format.")
     private String email;
 
-    @Pattern(regexp = "(^$|[0-9]{10})", message = "phone must be 10 digits.")
+    @Pattern(regexp = "^[0-9]{10}$", message = "phone must be 10 digits.")
     private String phone;
 
-    private List<Account> accounts = new ArrayList();
+    private List<AccountDTO> accounts = new ArrayList<AccountDTO>(); //specific the type w <AccountDTO> | '<>' x avoid raw types
 
 }
