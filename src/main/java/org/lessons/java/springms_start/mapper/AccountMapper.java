@@ -11,7 +11,7 @@ public class AccountMapper {
     public static AccountDTO mapToAccountDTO(Account account) {  //static! no use Repository within, not necessary create instances
         AccountDTO accountDTO = new AccountDTO();  //better set this directly here, accountDTO isnt saved on db so is always new is customer that is fetched from db
 
-        accountDTO.setAccountId(account.getAccountId());
+        accountDTO.setAccountId(account.getAccountId());  //ok!
 
         accountDTO.setAccountNumber(account.getAccountNumber());
         accountDTO.setAccountType(account.getAccountType());
@@ -23,7 +23,7 @@ public class AccountMapper {
     }
 
     public static Account mapToAccount(AccountDTO accountDTO, Account account, Customer customer) {  //static! no use Repository within, not necessary create instances
-        //account.setAccountId(accountDTO.getAccountId());  //already created in the entity birth
+        //account.setAccountId(accountDTO.getAccountId());  //already created in the entity birth!
         account.setAccountNumber(accountDTO.getAccountNumber());
         account.setAccountType(accountDTO.getAccountType());
         account.setBranchAddress(accountDTO.getBranchAddress());

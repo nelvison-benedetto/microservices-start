@@ -69,7 +69,7 @@ public class AccountRestController {
         if(isDeleted){
             return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new ResponseDTO(AccountCostants.STATUS_200, AccountCostants.MESSAGE_200));
+                .body(new ResponseDTO(AccountCostants.STATUS_200, "User deleted successfully."));
         }else{
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)

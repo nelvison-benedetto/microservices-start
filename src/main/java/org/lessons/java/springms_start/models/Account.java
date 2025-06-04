@@ -2,6 +2,7 @@ package org.lessons.java.springms_start.models;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
@@ -24,7 +25,7 @@ import lombok.ToString;
 @Table(name = "accounts")
 @Getter @Setter @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(exclude = "customer")  //@tostring NEVER apply x relation fields!!
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)  //callSuper di default is false, and in superclass i don't have a accountId, but lombock wants always details how manage it
 public class Account extends BaseEntity implements Serializable{  //use as base BaseEntity
     
@@ -51,7 +52,7 @@ public class Account extends BaseEntity implements Serializable{  //use as base 
 
     @ManyToOne(fetch = FetchType.LAZY)  //many account possono essere associati ad 1 account. no limits of number of accounts 
     @JoinColumn(name="customer_id")
-    @JsonManagedReference
+    @JsonBackReference
     private Customer customer;  //il father a cui appartiene this child Account
 
 }

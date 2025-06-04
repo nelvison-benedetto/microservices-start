@@ -1,5 +1,6 @@
 package org.lessons.java.springms_start.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.lessons.java.springms_start.models.Account;
@@ -12,7 +13,7 @@ import jakarta.transaction.Transactional;
 @Repository
 public interface AccountRepo extends JpaRepository<Account, Integer> {
     
-    Optional<Account> findByCustomer_CustomerId(Integer customerId);
+    List<Account> findByCustomer_CustomerId(Integer customerId);
     
     @Transactional  //spring knows all operations will be performed within a Transaction(if operation fails, the transaction is rolled back (annullata) easily)
     @Modifying  //spring knows that is operation of modifying, otherwise only read is performed

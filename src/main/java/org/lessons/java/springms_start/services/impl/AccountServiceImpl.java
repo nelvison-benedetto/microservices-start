@@ -3,6 +3,8 @@ package org.lessons.java.springms_start.services.impl;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.lessons.java.springms_start.constants.AccountCostants;
 import org.lessons.java.springms_start.dto.AccountDTO;
@@ -35,18 +37,23 @@ public class AccountServiceImpl implements IAccountService{
 
     @Override
     public void createAccount(CustomerDTO customerDTO) {
-        Customer customer = CustomerMapper.mapToCustomer(customerDTO, new Customer()); //converts obj customerDTO->Customer
         Optional<Customer> optionalCustomer = customerRepo.findByPhone(customerDTO.getPhone());
         if(optionalCustomer.isPresent()){
             throw new CustomerAlreadyExistsException("Customer already registered with given phone "
                 + customerDTO.getPhone());
         }
 
+        Customer customer = CustomerMapper.mapToCustomer(customerDTO, new Customer()); //converts obj customerDTO->Customer
         Customer savedCustomer = customerRepo.save(customer);  //.save() always return the obj just saved
             //to save on DB u need an etity u can't use a DTO, so i converted and now the obj saved had some field null (e.g. field accounts)
         System.out.println("Saved customer from DB: " + customerRepo.findById(savedCustomer.getCustomerId()).get()); //x debug GET DATA FROM THE DB!
-        accountRepo.save(createNewAccount(savedCustomer));
+        
+        Account newAccount = createNewAccount(savedCustomer);
+        savedCustomer.setAccounts(List.of(newAccount));
+        accountRepo.save(newAccount);
+        System.out.println("Saved account from DB: " + accountRepo.findById(newAccount.getAccountId()).get());
     }
+
 
     private Account createNewAccount(Customer customer){
         Account newAccount = new Account();
@@ -67,37 +74,43 @@ public class AccountServiceImpl implements IAccountService{
         Customer customer = customerRepo.findByPhone(phone).orElseThrow(
             ()-> new ResourceNotFoundException("Customer", "phone", phone)  //create new obj
         );
-        Account account = accountRepo.findByCustomer_CustomerId(customer.getCustomerId()).orElseThrow(
-            ()-> new ResourceNotFoundException("Account", "customerId", customer.getCustomerId().toString())
-        );
-        CustomerDTO customerDTO = CustomerMapper.mapToCustomerDTO(customer); //converts obj Customer->CustomerDTO (with field accountDTO, null)
-        AccountDTO accountDTO = AccountMapper.mapToAccountDTO(account);
-        customerDTO.getAccounts().add(accountDTO);
+
+        List<Account> accounts = accountRepo.findByCustomer_CustomerId(customer.getCustomerId());
+        if(accounts.isEmpty()) {
+            throw new ResourceNotFoundException("Account", "customerId", customer.getCustomerId().toString());
+        }
+        
+        CustomerDTO customerDTO = CustomerMapper.mapToCustomerDTO(customer); //converts obj Customer->CustomerDTO, makes also the .stream x the accounts
+        List<AccountDTO> accountDTOlist = accounts.stream().map(AccountMapper::mapToAccountDTO).collect(Collectors.toList());
+        customerDTO.setAccounts(accountDTOlist); //!!x security & performance, override the .getAccounts() of the customerDTO
+
         return customerDTO;
     }
 
     @Override
-    public boolean updateAccount(CustomerDTO customerDTO){
+    public boolean updateAccount(CustomerDTO customerDTO){  //TODO : per gli UPDATE mapToCustomer() puo ovveride dei campi compilati in null
         boolean isUpdated = false;
         List<AccountDTO> accountDTOlist = customerDTO.getAccounts();
         if(! accountDTOlist.isEmpty()){
 
             for (AccountDTO accountDTO : accountDTOlist) {
-                Account account = accountRepo.findById(accountDTO.getAccountId()).orElseThrow(
+                Account accountFound = accountRepo.findById(accountDTO.getAccountId()).orElseThrow(
                     () -> new ResourceNotFoundException("Account", "accountId", accountDTO.getAccountId().toString())
                 );
-                Customer customer = account.getCustomer();
-                AccountMapper.mapToAccount(accountDTO, account, customer);
-                accountRepo.save(account);
+                Customer customer = accountFound.getCustomer();
+                Account accountOk = AccountMapper.mapToAccount(accountDTO, accountFound, customer);
+                accountRepo.save(accountOk);
             }
 
             Integer customerId =customerDTO.getCustomerId();
-            
             Customer customer = customerRepo.findById(customerId).orElseThrow(
                 ()-> new ResourceNotFoundException("Customer", "customerId", customerId.toString())
             );
-            CustomerMapper.mapToCustomer(customerDTO, customer);
-            customer = customerRepo.save(customer);
+
+            Customer customerOk = CustomerMapper.mapToCustomerForUpdate(customerDTO, customer);
+            Customer customerUpdated = customerRepo.save(customerOk);
+            System.out.println("Updated customer from DB: " + customerRepo.findById(customerUpdated.getCustomerId()).get());
+            
             isUpdated = true;
         } else{
             System.out.println("Update failed, account list of the obj customerDTO is empty.");

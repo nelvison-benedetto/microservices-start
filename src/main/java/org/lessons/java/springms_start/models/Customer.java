@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -31,7 +32,7 @@ import lombok.ToString;
 @Table(name = "customers")
 @Getter @Setter @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(exclude = "accounts")  //@tostring NEVER apply x relation fields!!
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)  //callSuper di default is false, and in superclass i don't have a customerId, but lombock wants always details how manage it
 public class Customer extends BaseEntity implements Serializable{   //use as base BaseEntity
 
@@ -58,7 +59,7 @@ public class Customer extends BaseEntity implements Serializable{   //use as bas
     //RELATIONS
 
     @OneToMany(mappedBy = "customer" ,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonBackReference
+    @JsonManagedReference
     private List<Account> accounts = new ArrayList<>();
 
 }

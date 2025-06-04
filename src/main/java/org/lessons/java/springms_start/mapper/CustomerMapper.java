@@ -37,7 +37,7 @@ public class CustomerMapper {
 
 
     public static Customer mapToCustomer(CustomerDTO customerDTO, Customer customer) {  //static! no use Repository within, not necessary create instances 
-        //customer.setCustomerId(customerDTO.getCustomerId());  //already created in the entity birth
+        //customer.setCustomerId(customerDTO.getCustomerId());  //already created in the entity birth!
         customer.setFirstName(customerDTO.getFirstName());
         customer.setLastName(customerDTO.getLastName());
         customer.setEmail(customerDTO.getEmail());
@@ -55,6 +55,18 @@ public class CustomerMapper {
             .collect(Collectors.toList());
         customer.setAccounts(accounts);
 
+        return customer;
+    }
+
+    public static Customer mapToCustomerForUpdate(CustomerDTO customerDTO, Customer customer) {
+        //customer.setCustomerId(customerDTO.getCustomerId());  //already created in the entity birth!
+        customer.setFirstName(customerDTO.getFirstName());
+        customer.setLastName(customerDTO.getLastName());
+        customer.setEmail(customerDTO.getEmail());
+        customer.setPhone(customerDTO.getPhone());
+
+        //dont touch accounts!!
+        
         return customer;
     }
 
